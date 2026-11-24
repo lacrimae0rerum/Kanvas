@@ -2163,6 +2163,14 @@ class InstalledCommandTests(TempBoard):
         self.assertIn("update it to 0.4.0rc2.", self.hint("0.4.0rc1", "0.4.0rc2", installed=True, on_path=True))
         self.assertIn("newer than your kanvas 0.4.0rc1", self.hint("0.4.0", "0.4.0rc1", installed=True, on_path=True))
 
+    def test_a_local_suffix_does_not_change_the_public_version(self):
+        self.assertEqual(kanvas._version_key("0.6.0+clef"), kanvas._version_key("0.6.0"))
+        self.assertGreater(kanvas._version_key("0.6.0+clef"), kanvas._version_key("0.0.1"))
+        self.assertIn("update it to 0.6.0+clef.", self.hint("0.0.1", "0.6.0+clef", installed=True, on_path=True))
+        self.assertIsNone(self.hint("0.6.0", "0.6.0+clef", installed=True, on_path=True))
+        self.assertIsNone(kanvas._version_key("0.6.0+"))
+        self.assertIsNone(kanvas._version_key("0.6.0+clef extra"))
+
     def test_no_hint_when_versions_match_or_cannot_be_read(self):
         self.assertIsNone(self.hint("0.5.0", installed=True, on_path=True))
         self.assertIsNone(self.hint("0.5", installed=True, on_path=True))

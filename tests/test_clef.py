@@ -579,7 +579,7 @@ class ServeTests(NoNetwork):
 
     def test_off_by_default(self):
         out, clef = self.serve({})
-        self.assertNotIn("Clef", out)
+        self.assertIn("Clef: off.", out)
         self.assertIsNone(clef)
 
     def test_an_incomplete_opt_in_says_what_is_missing(self):
@@ -772,4 +772,3 @@ class OrderSuggestionTests(SuggestionBoard):
         wait_for("an order suggestion for FE-04", lambda: self.clef()["order"].get("FE-04"))
         status, view = self.dismiss({"use": "order", "task": "FE-04", "item": "FE-02"})
         self.assertEqual((status, view["order"].get("FE-04")), (200, None))
-

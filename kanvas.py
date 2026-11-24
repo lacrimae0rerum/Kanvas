@@ -39,7 +39,7 @@ from html import escape
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import quote, unquote, urlparse
 
-VERSION = "0.5.0"
+VERSION = "0.6.0+clef"
 FORMAT = 1
 INSTALLED = __name__ == "kanvas_board"
 BOARD_FILE = "kanvas.json"
@@ -1018,8 +1018,9 @@ def project_command(rest=""):
 
 
 def _version_key(version):
-    """Sortable form of a release number: 0.4.0a1 < 0.4.0b1 < 0.4.0rc1 < 0.4.0 < 0.4.1."""
-    m = re.fullmatch(r"(\d+(?:\.\d+)*)(?:(a|b|rc)(\d+))?", version.strip())
+    """Sortable form of a release number: 0.4.0a1 < 0.4.0b1 < 0.4.0rc1 < 0.4.0 < 0.4.1.
+    Local labels describe variants, not upgrades: 0.6.0+clef sorts with 0.6.0."""
+    m = re.fullmatch(r"(\d+(?:\.\d+)*)(?:(a|b|rc)(\d+))?(?:\+[0-9a-zA-Z]+(?:[._-][0-9a-zA-Z]+)*)?", version.strip())
     if not m:
         return None
     numbers = tuple(int(part) for part in m.group(1).split("."))
@@ -4991,6 +4992,8 @@ def cmd_serve(args):
               "dependencies and flag repeated proposals (KANVAS_CLEF=1).")
     elif clef_missing():
         print(f"Clef stays off: KANVAS_CLEF=1 also needs {' and '.join(clef_missing())}.")
+    else:
+        print("Clef: off. Set KANVAS_CLEF=1 with CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN to turn it on.")
     if not server.check_host:
         print("Warning: listening beyond localhost; anyone who can reach this port can edit the board.")
     if not args.no_open:
